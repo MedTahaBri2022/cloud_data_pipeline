@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: retail-pipeline
+
+resources:
+  - namespace.yaml
+  - postgres.yaml
+  - mongo.yaml
+  - ingestion-api.yaml
+  - etl-cronjob.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: retail-pipeline
+
+# Non-sensitive settings. The generated name carries a content hash, so a
+# changed value rolls the workloads that use it.
+configMapGenerator:
+  - name: pipeline-config
+    literals:
+      - MONGO_URL=mongodb://mongo:27017
+      - MONGO_DATABASE=raw
+      - PORT=8080

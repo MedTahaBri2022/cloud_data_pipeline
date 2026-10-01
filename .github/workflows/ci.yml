@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  etl:
+    name: Pipeline (unit + integration)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pipeline
+          POSTGRES_PASSWORD: pipeline
+          POSTGRES_DB: warehouse_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pipeline"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+    env:
+      TEST_WAREHOUSE_DSN: postgresql://pipeline:pipeline@localhost:5432/warehouse_test
+      TEST_MONGO_URL: mongodb://localhost:27017
+      REQUIRE_DATABASES: '1'
+    defaults:
+      run:
+        working-directory: etl
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: etl/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -v
+
+  api:
+    name: Ingestion API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ingestion-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ingestion-api/package-lock.json
+      - run: npm ci
+      - run: npm test
+
+  airflow:
+    name: Airflow DAG (integrity + full run)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build images
+        run: docker compose build
+      - name: DAG integrity
+        run: docker compose run --rm -T airflow-scheduler python /opt/airflow/check_dags.py
+      - name: Send sample orders
+        run: |
+          docker compose up -d ingestion-api
+          timeout 60 bash -c "until curl -sf localhost:8080/health; do sleep 2; done"
+          cd ingestion-api && npm ci && node scripts/simulate-orders.js 500
+      - name: Run the DAG end to end
+        run: |
+          docker compose run --rm -T airflow-scheduler \
+            airflow dags test retail_pipeline 2026-01-01 | tee dag-run.log
+          grep -q "state=success" dag-run.log
+      - name: The reporting layer has data
+        run: |
+          curl -sf localhost:8080/reports/monthly-revenue | tee revenue.json
+          test "$(jq length revenue.json)" -gt 0
+
+  kubernetes:
+    name: Kubernetes manifests and images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: kubectl kustomize k8s > /dev/null
+      - run: docker build -t retail-etl:ci -f etl/Dockerfile .
+      - run: docker build -t retail-ingestion-api:ci ingestion-api
