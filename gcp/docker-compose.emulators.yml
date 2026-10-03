@@ -1,0 +1,21 @@
+# Local stand-ins for Cloud Storage and BigQuery, used by the export tests:
+#   docker compose -f gcp/docker-compose.emulators.yml up -d
+# The BigQuery emulator reads load-job files from the storage emulator.
+name: retail-gcp-emulators
+
+services:
+  gcs:
+    image: fsouza/fake-gcs-server:1
+    command: ["-scheme", "http", "-port", "4443", "-external-url", "http://localhost:4443", "-public-host", "localhost:4443"]
+    ports:
+      - '4443:4443'
+
+  bigquery:
+    image: ghcr.io/goccy/bigquery-emulator:latest
+    command: ["--project=demo-project"]
+    environment:
+      STORAGE_EMULATOR_HOST: http://gcs:4443
+    ports:
+      - '9050:9050'
+    depends_on:
+      - gcs

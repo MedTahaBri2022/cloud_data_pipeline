@@ -1,2 +1,4 @@
 pymongo>=4.10,<5
 psycopg2-binary>=2.9,<3
+google-cloud-storage>=3,<4
+google-cloud-bigquery>=3.40,<4

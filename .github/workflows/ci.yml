@@ -44,6 +44,59 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: pytest -v
 
+  gcp:
+    name: Google Cloud (Terraform tests + export on emulators)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pipeline
+          POSTGRES_PASSWORD: pipeline
+          POSTGRES_DB: warehouse_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pipeline"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+    env:
+      TEST_WAREHOUSE_DSN: postgresql://pipeline:pipeline@localhost:5432/warehouse_test
+      TEST_MONGO_URL: mongodb://localhost:27017
+      REQUIRE_GCP_EMULATORS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Terraform format, validate and test (mocked provider, no GCP account)
+        working-directory: gcp/terraform
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false -input=false
+          terraform validate
+          terraform test
+      - name: Start the Cloud Storage and BigQuery emulators
+        run: |
+          docker compose -f gcp/docker-compose.emulators.yml up -d
+          timeout 60 bash -c "until curl -s localhost:9050 > /dev/null && curl -s localhost:4443/storage/v1/b > /dev/null; do sleep 2; done"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: etl/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+        working-directory: etl
+      - run: pytest -v tests/test_gcp_export.py
+        working-directory: etl
+      - name: The pipeline image carries the BigQuery schemas
+        run: |
+          docker build -t retail-etl:ci -f etl/Dockerfile .
+          docker run --rm --entrypoint ls retail-etl:ci /app/gcp/bigquery/schemas
+
   api:
     name: Ingestion API
     runs-on: ubuntu-latest

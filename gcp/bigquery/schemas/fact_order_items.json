@@ -1,0 +1,14 @@
+[
+  {"name": "order_id", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "product_key", "type": "INT64", "mode": "REQUIRED"},
+  {"name": "customer_key", "type": "INT64", "mode": "REQUIRED"},
+  {"name": "date_key", "type": "INT64", "mode": "REQUIRED"},
+  {"name": "order_date", "type": "DATE", "mode": "REQUIRED", "description": "Partitioning column"},
+  {"name": "status", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "channel", "type": "STRING", "mode": "REQUIRED"},
+  {"name": "quantity", "type": "INT64", "mode": "REQUIRED"},
+  {"name": "unit_price", "type": "NUMERIC", "mode": "REQUIRED"},
+  {"name": "revenue", "type": "NUMERIC", "mode": "REQUIRED"},
+  {"name": "cost", "type": "NUMERIC", "mode": "REQUIRED"},
+  {"name": "margin", "type": "NUMERIC", "mode": "REQUIRED"}
+]

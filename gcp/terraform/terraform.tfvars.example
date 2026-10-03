@@ -1,0 +1,6 @@
+project_id  = "my-gcp-project"
+environment = "dev"
+region      = "europe-west1"
+
+# Uncomment when the warehouse is reachable on a private network (Cloud SQL).
+# warehouse_network = "projects/my-gcp-project/global/networks/default"

@@ -35,7 +35,9 @@ SELECT p.product_id,
 CREATE UNIQUE INDEX IF NOT EXISTS uq_product_performance ON marts.product_performance (product_id);
 
 -- RFM segmentation: recency, frequency and monetary value, each scored 1-4 by
--- quartile, then mapped to a segment a marketer can act on.
+-- quartile, then mapped to a segment a marketer can act on. customer_id breaks
+-- ties: without it, customers with equal values are split between quartiles
+-- in an arbitrary order, and two refreshes (or two engines) disagree.
 CREATE MATERIALIZED VIEW IF NOT EXISTS marts.customer_segments AS
 WITH per_customer AS (
     SELECT c.customer_id,
@@ -52,9 +54,9 @@ WITH per_customer AS (
 ),
 scored AS (
     SELECT *,
-           ntile(4) OVER (ORDER BY last_order_date) AS recency_score,
-           ntile(4) OVER (ORDER BY orders)          AS frequency_score,
-           ntile(4) OVER (ORDER BY revenue)         AS monetary_score
+           ntile(4) OVER (ORDER BY last_order_date, customer_id) AS recency_score,
+           ntile(4) OVER (ORDER BY orders, customer_id) AS frequency_score,
+           ntile(4) OVER (ORDER BY revenue, customer_id) AS monetary_score
       FROM per_customer
 )
 SELECT customer_id,

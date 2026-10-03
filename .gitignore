@@ -8,3 +8,10 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example

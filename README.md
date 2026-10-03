@@ -4,9 +4,11 @@ An end-to-end data pipeline for structured retail data: events are ingested
 through a Node.js API into MongoDB, validated and loaded by a Python ETL into a
 PostgreSQL star schema, orchestrated by Apache Airflow, and served to
 Power BI through a reporting layer. Every component is containerized and the
-platform also runs on Kubernetes.
+platform also runs on Kubernetes. The warehouse is also exported to
+Google Cloud (Cloud Storage, then BigQuery), with the infrastructure written in
+Terraform.
 
-**Node.js · Python · Apache Airflow · PostgreSQL · MongoDB · Docker · Kubernetes · Power BI**
+**Node.js · Python · Apache Airflow · PostgreSQL · MongoDB · Docker · Kubernetes · Google Cloud (BigQuery, Cloud Storage, Cloud Run) · Terraform · Power BI**
 
 [![CI](https://github.com/MedTahaBri2022/cloud_data_pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/MedTahaBri2022/cloud_data_pipeline/actions/workflows/ci.yml)
 
@@ -157,6 +159,11 @@ docker compose run --rm airflow-scheduler python /opt/airflow/check_dags.py
   replay without change, incremental updates and corrections, and a failed
   quality check that is recorded and then repaired. They are skipped when the
   databases are not running, and mandatory in CI.
+- **13 tests of the Google Cloud export**: serialisation, load settings, a
+  reconciliation failure with fake clients, and an end-to-end run against the
+  Cloud Storage and BigQuery emulators (export, re-export, and the four marts
+  compared row by row with PostgreSQL).
+- **7 Terraform tests** (`terraform test`, mocked provider).
 - **10 API tests** with injected fake stores.
 - **DAG integrity**: the DAG imports, has the expected task order and
   settings.
@@ -187,6 +194,76 @@ Verified on a local single-node k3s cluster: 2,000 events sent through the
 NodePort, a job created from the CronJob loaded 1,942 orders, rejected 58 and
 passed the six checks in 8 seconds.
 
+## Google Cloud
+
+The same warehouse can be published to BigQuery, so analysts query it with
+SQL in the console and BI tools connect to a managed warehouse instead of the
+operational database.
+
+```
+PostgreSQL warehouse ──► export_to_gcp (Cloud Run job, every hour)
+                             │  1. one consistent snapshot of the 4 tables
+                             ▼
+                  Cloud Storage  gs://…-exports/warehouse/run=<time>/*.json
+                             │  2. load jobs, WRITE_TRUNCATE
+                             ▼
+                  BigQuery  retail_warehouse_<env>  (fact partitioned by day,
+                             │                       clustered on join keys)
+                             ▼
+                  BigQuery  retail_marts_<env>      (4 views, same rules as
+                                                     the PostgreSQL marts)
+```
+
+**Infrastructure** (`gcp/terraform`, 29 resources): the bucket (private,
+files deleted after 30 days), two datasets, the four tables and the four mart
+views, an Artifact Registry repository for the pipeline image, the Cloud Run
+job and the Cloud Scheduler trigger, a Secret Manager secret for the database
+connection string, and two service accounts with narrow roles. Production
+(`environment = "prod"`) protects tables, job and bucket against deletion.
+
+Design decisions:
+
+- **One schema file per table** (`gcp/bigquery/schemas`), read by Terraform to
+  create the table and by the job to load it: they cannot drift apart.
+- **Consistent snapshot.** The four tables are read in one read-only,
+  repeatable-read transaction, so a fact never points to a customer exported
+  from another instant.
+- **Atomic, repeatable loads.** Each load job replaces its table in one
+  operation (`WRITE_TRUNCATE`); a dashboard never sees half a load and running
+  the export twice gives the same tables.
+- **Reconciled.** After loading, the row count of each BigQuery table is
+  compared with the number of rows exported; a difference fails the job.
+- **Less personal data.** Customer e-mail addresses are not exported.
+- **No secret in Terraform state.** Terraform creates the secret; its value is
+  added with `gcloud secrets versions add`.
+- **Same marts, same numbers.** The BigQuery views are the PostgreSQL marts
+  translated to GoogleSQL. Comparing them row by row found a real defect: the
+  RFM quartiles had no tie-breaker, so customers with equal values were ranked
+  differently by the two engines (and could change between two refreshes).
+  Both now order by `customer_id` as well.
+
+Deploy:
+
+```bash
+cd gcp/terraform
+cp terraform.tfvars.example terraform.tfvars    # set project_id
+terraform init && terraform apply
+gcloud secrets versions add retail-dev-warehouse-dsn --data-file=-   # paste the DSN
+docker build -f etl/Dockerfile -t <image_repository>/retail-etl:latest . && docker push …
+```
+
+Run the export locally against the emulators:
+
+```bash
+docker compose up -d postgres mongo
+docker compose -f gcp/docker-compose.emulators.yml up -d
+cd etl && pytest tests/test_gcp_export.py
+```
+
+On the local demo warehouse (14,863 fact rows) the export takes about
+4 seconds against the emulators, and the four BigQuery marts are identical to
+the PostgreSQL ones.
+
 ## Reporting
 
 [reporting/powerbi.md](reporting/powerbi.md) describes how to connect
@@ -207,6 +284,7 @@ etl/             Python package `pipeline`: validation, stages, quality checks, 
 sql/             schema, staging → star schema transform, marts
 airflow/         DAG, image, DAG integrity check
 k8s/             Kubernetes manifests (kustomize)
+gcp/             Terraform for Google Cloud, BigQuery schemas and marts, emulators
 reporting/       Power BI model and measures
 data/raw/        reference CSV files (generated, with a few invalid rows on purpose)
 ```
@@ -218,6 +296,10 @@ data/raw/        reference CSV files (generated, with a few invalid rows on purp
 - Airflow runs with the LocalExecutor in docker-compose. On Kubernetes the
   pipeline runs as a CronJob; Airflow itself is not deployed there.
 - No authentication on the API.
+- The Google Cloud configuration has been validated, planned and tested with
+  a mocked provider, and the export runs against emulators; it has not been
+  applied to a real GCP project. Reaching the PostgreSQL warehouse from Cloud
+  Run needs a network path (Cloud SQL or a VPC, variable `warehouse_network`).
 - The Power BI part is a documented model, not a `.pbix` file.
 
 ## License
