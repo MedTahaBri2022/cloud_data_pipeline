@@ -1,0 +1,47 @@
+table dim_customer
+	lineageTag: c3d7089e-be93-5e69-b273-819204e01fdb
+
+	column customer_key
+		dataType: int64
+		isHidden
+		lineageTag: 89e560e9-c069-5bf9-8b70-bfdc12375893
+		summarizeBy: none
+		sourceColumn: customer_key
+
+	column customer_id
+		dataType: string
+		lineageTag: e4fe0ae1-084d-5013-bfc7-b4d6495cb16d
+		summarizeBy: none
+		sourceColumn: customer_id
+
+	column name
+		dataType: string
+		lineageTag: 7cfe1e09-0455-5901-959d-09023692dab6
+		summarizeBy: none
+		sourceColumn: name
+
+	column country
+		dataType: string
+		lineageTag: ec50b775-34d4-5065-a29b-8b1ba006aa4a
+		summarizeBy: none
+		sourceColumn: country
+
+	column signup_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 2e96c643-7d85-5f12-af68-6ba534c6260b
+		summarizeBy: none
+		sourceColumn: signup_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition dim_customer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_customer.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"customer_key", Int64.Type}, {"customer_id", type text}, {"name", type text}, {"country", type text}, {"signup_date", type date}}, "en-US")
+				in
+				    Typed
+

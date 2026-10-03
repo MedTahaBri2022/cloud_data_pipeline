@@ -97,6 +97,16 @@ jobs:
           docker build -t retail-etl:ci -f etl/Dockerfile .
           docker run --rm --entrypoint ls retail-etl:ci /app/gcp/bigquery/schemas
 
+  powerbi:
+    name: Power BI project (fields used by visuals exist in the model)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python reporting/powerbi/check_project.py
+
   api:
     name: Ingestion API
     runs-on: ubuntu-latest

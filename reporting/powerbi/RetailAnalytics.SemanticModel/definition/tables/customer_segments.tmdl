@@ -1,0 +1,47 @@
+table customer_segments
+	lineageTag: e4105450-b078-561d-b386-131c05ef47a1
+
+	measure Customers = COUNTROWS ( customer_segments )
+		formatString: #,##0
+		lineageTag: c9a69cef-66f4-5db0-bf65-d0f408c0a05e
+
+	column customer_id
+		dataType: string
+		lineageTag: 09ad0f5b-ac9e-521f-86d7-cf34c98ca7db
+		summarizeBy: none
+		sourceColumn: customer_id
+
+	column recency_score
+		dataType: int64
+		lineageTag: 91c136ca-19e0-52fc-88bf-8064e26d0582
+		summarizeBy: none
+		sourceColumn: recency_score
+
+	column frequency_score
+		dataType: int64
+		lineageTag: 5ef221db-3817-5e2d-a173-111fbc1c8729
+		summarizeBy: none
+		sourceColumn: frequency_score
+
+	column monetary_score
+		dataType: int64
+		lineageTag: 6af164ae-ecd7-59a8-b844-632a06fa4743
+		summarizeBy: none
+		sourceColumn: monetary_score
+
+	column segment
+		dataType: string
+		lineageTag: 38641f49-a611-51d6-b0dd-534e54eb929b
+		summarizeBy: none
+		sourceColumn: segment
+
+	partition customer_segments = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "customer_segments.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"customer_id", type text}, {"recency_score", Int64.Type}, {"frequency_score", Int64.Type}, {"monetary_score", Int64.Type}, {"segment", type text}}, "en-US")
+				in
+				    Typed
+

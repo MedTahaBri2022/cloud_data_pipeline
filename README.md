@@ -266,8 +266,15 @@ the PostgreSQL ones.
 
 ## Reporting
 
-[reporting/powerbi.md](reporting/powerbi.md) describes how to connect
-Power BI to the warehouse: tables, relationships and DAX measures. The marts:
+A two-page Power BI report is in `reporting/powerbi/`, both as
+`RetailAnalytics.pbix` and as a Power BI project (model in TMDL, report in
+PBIR, readable in a diff). It imports a CSV snapshot of the star schema, so it
+opens without a database.
+
+![Power BI overview page](docs/powerbi-overview.png)
+
+[reporting/powerbi.md](reporting/powerbi.md) describes the model, the DAX
+measures and how to point the report at the live database instead. The marts:
 
 | Mart | Content |
 | --- | --- |
@@ -285,7 +292,7 @@ sql/             schema, staging → star schema transform, marts
 airflow/         DAG, image, DAG integrity check
 k8s/             Kubernetes manifests (kustomize)
 gcp/             Terraform for Google Cloud, BigQuery schemas and marts, emulators
-reporting/       Power BI model and measures
+reporting/       Power BI report (.pbix and project files), data snapshot, documentation
 data/raw/        reference CSV files (generated, with a few invalid rows on purpose)
 ```
 
@@ -300,7 +307,8 @@ data/raw/        reference CSV files (generated, with a few invalid rows on purp
   a mocked provider, and the export runs against emulators; it has not been
   applied to a real GCP project. Reaching the PostgreSQL warehouse from Cloud
   Run needs a network path (Cloud SQL or a VPC, variable `warehouse_network`).
-- The Power BI part is a documented model, not a `.pbix` file.
+- The Power BI report reads a CSV snapshot, refreshed by a script, not the
+  live database; it is not published to the Power BI service.
 
 ## License
 

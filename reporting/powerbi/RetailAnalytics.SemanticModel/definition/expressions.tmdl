@@ -1,0 +1,5 @@
+expression DataFolder = "C:\cloud_data_pipeline\reporting\powerbi\data\" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]
+	lineageTag: 79b5e9e3-e5f9-5159-b36d-eb9757987a64
+
+	annotation PBI_ResultType = Text
+

@@ -1,0 +1,133 @@
+table fact_order_items
+	lineageTag: 8970756c-442b-5ac3-8b55-f3f0cc7aef31
+
+	measure Revenue = CALCULATE ( SUM ( fact_order_items[line_revenue] ), NOT fact_order_items[status] IN { "cancelled", "returned" } )
+		formatString: #,##0
+		lineageTag: a86f45b7-7f31-5dbe-bd89-4ada8d79883e
+
+	measure Margin = CALCULATE ( SUM ( fact_order_items[line_margin] ), NOT fact_order_items[status] IN { "cancelled", "returned" } )
+		formatString: #,##0
+		lineageTag: 4d395a6d-cf33-5b17-bb42-73577b241b73
+
+	measure 'Margin %' = DIVIDE ( [Margin], [Revenue] )
+		formatString: 0.0%
+		lineageTag: 53f9b12a-546b-52f6-aacd-a4b55faa173f
+
+	measure Orders = CALCULATE ( DISTINCTCOUNT ( fact_order_items[order_id] ), NOT fact_order_items[status] IN { "cancelled", "returned" } )
+		formatString: #,##0
+		lineageTag: 408feba1-4360-505d-8b1f-1a825c28894b
+
+	measure 'Average Order Value' = DIVIDE ( [Revenue], [Orders] )
+		formatString: #,##0.00
+		lineageTag: b286c007-61f6-5741-a7b2-344f1fc7c469
+
+	measure 'Daily Revenue' = DIVIDE ( [Revenue], COUNTROWS ( dim_date ) )
+		formatString: #,##0
+		lineageTag: b8dfe0a1-3ab6-5bdb-91fd-659c797bf76e
+
+	measure 'Daily Margin' = DIVIDE ( [Margin], COUNTROWS ( dim_date ) )
+		formatString: #,##0
+		lineageTag: d58e6c9f-79b7-5b9a-ad34-d1244b84d41a
+
+	measure Units = CALCULATE ( SUM ( fact_order_items[quantity] ), NOT fact_order_items[status] IN { "cancelled", "returned" } )
+		formatString: #,##0
+		lineageTag: 2a8adaca-f46d-58c0-9f1a-6e723b61c45d
+
+	measure 'Revenue Previous Month' = CALCULATE ( [Revenue], DATEADD ( dim_date[full_date], -1, MONTH ) )
+		formatString: #,##0
+		lineageTag: c4e5ab03-ae42-50c0-94f7-f35202ede7d0
+
+	measure 'Revenue MoM %' = VAR Previous = [Revenue Previous Month] RETURN IF ( NOT ISBLANK ( Previous ), DIVIDE ( [Revenue] - Previous, Previous ) )
+		formatString: 0.0%
+		lineageTag: c7e954c0-2b6a-5f93-b867-6e5b29a7de5d
+
+	measure 'Return Rate' = DIVIDE ( CALCULATE ( DISTINCTCOUNT ( fact_order_items[order_id] ), fact_order_items[status] = "returned" ), DISTINCTCOUNT ( fact_order_items[order_id] ) )
+		formatString: 0.0%
+		lineageTag: a2a55dcc-9146-5102-95be-02efad272783
+
+	column order_id
+		dataType: string
+		lineageTag: 7c8412fb-7f39-5aa9-a686-efd396daf350
+		summarizeBy: none
+		sourceColumn: order_id
+
+	column product_key
+		dataType: int64
+		isHidden
+		lineageTag: 90ab66eb-4a53-59f3-b030-8c6be5f82c72
+		summarizeBy: none
+		sourceColumn: product_key
+
+	column customer_key
+		dataType: int64
+		isHidden
+		lineageTag: 2c6e5ed5-4a9e-57dd-89b7-f284566da3e2
+		summarizeBy: none
+		sourceColumn: customer_key
+
+	column date_key
+		dataType: int64
+		isHidden
+		lineageTag: d5592c6a-e2f6-527c-b016-5a3532a8bf84
+		summarizeBy: none
+		sourceColumn: date_key
+
+	column status
+		dataType: string
+		lineageTag: 4c2e792c-ee6b-5e1c-8436-31c4d5236b22
+		summarizeBy: none
+		sourceColumn: status
+
+	column channel
+		dataType: string
+		lineageTag: 4943845b-5fb9-5c8e-a2c7-1c507bfd441b
+		summarizeBy: none
+		sourceColumn: channel
+
+	column quantity
+		dataType: int64
+		lineageTag: 493d56bb-cb60-5177-959d-4c00e39e2ea0
+		summarizeBy: sum
+		sourceColumn: quantity
+
+	column unit_price
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: 03013906-05f8-53c4-93a4-7b87e6aacf67
+		summarizeBy: none
+		sourceColumn: unit_price
+
+	column line_revenue
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 930372de-c84a-5d22-a602-ccad06cef39b
+		summarizeBy: sum
+		sourceColumn: revenue
+
+	column line_cost
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 186d120e-f254-5761-8c40-703c33461b25
+		summarizeBy: sum
+		sourceColumn: cost
+
+	column line_margin
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 71d7f1ef-7061-5cf4-9967-07c32588474f
+		summarizeBy: sum
+		sourceColumn: margin
+
+	partition fact_order_items = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "fact_order_items.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"order_id", type text}, {"product_key", Int64.Type}, {"customer_key", Int64.Type}, {"date_key", Int64.Type}, {"status", type text}, {"channel", type text}, {"quantity", Int64.Type}, {"unit_price", Currency.Type}, {"revenue", Currency.Type}, {"cost", Currency.Type}, {"margin", Currency.Type}}, "en-US")
+				in
+				    Typed
+

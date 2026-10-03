@@ -1,0 +1,301 @@
+customer_id,recency_score,frequency_score,monetary_score,segment
+C0001,1,1,2,occasional
+C0002,1,2,2,occasional
+C0003,1,2,3,at risk
+C0004,4,3,2,loyal
+C0005,4,4,4,champion
+C0006,3,4,4,loyal
+C0007,4,1,1,new
+C0008,1,1,1,occasional
+C0009,2,2,3,at risk
+C0010,4,3,3,champion
+C0011,3,4,3,loyal
+C0012,2,3,3,at risk
+C0013,3,4,4,loyal
+C0014,2,2,1,occasional
+C0015,4,1,1,new
+C0016,4,2,2,loyal
+C0017,1,4,4,at risk
+C0018,1,3,2,occasional
+C0019,3,3,4,loyal
+C0020,3,2,4,loyal
+C0021,3,2,2,loyal
+C0022,4,2,3,loyal
+C0023,3,1,2,occasional
+C0024,2,4,3,at risk
+C0025,3,3,3,loyal
+C0026,4,4,4,champion
+C0027,2,1,1,occasional
+C0028,3,1,1,occasional
+C0029,1,1,1,occasional
+C0030,1,1,1,occasional
+C0031,3,1,3,occasional
+C0032,3,3,3,loyal
+C0033,1,4,4,at risk
+C0034,2,4,4,at risk
+C0035,4,2,1,loyal
+C0036,4,4,3,champion
+C0037,4,2,2,loyal
+C0038,3,4,3,loyal
+C0039,4,3,2,loyal
+C0040,4,2,2,loyal
+C0041,3,4,4,loyal
+C0042,2,2,3,at risk
+C0043,3,2,1,loyal
+C0044,1,4,4,at risk
+C0045,3,3,3,loyal
+C0046,2,3,4,at risk
+C0047,3,4,4,loyal
+C0048,3,1,2,occasional
+C0049,3,1,1,occasional
+C0050,3,4,4,loyal
+C0051,1,3,4,at risk
+C0052,1,4,3,at risk
+C0053,1,2,3,at risk
+C0054,2,2,2,occasional
+C0055,4,4,2,loyal
+C0056,4,4,4,champion
+C0057,1,1,2,occasional
+C0058,2,2,2,occasional
+C0059,1,2,2,occasional
+C0060,3,4,3,loyal
+C0061,3,4,4,loyal
+C0062,2,2,2,occasional
+C0063,1,2,2,occasional
+C0064,4,3,4,champion
+C0065,4,1,1,new
+C0066,4,4,4,champion
+C0067,3,3,3,loyal
+C0068,1,3,4,at risk
+C0069,2,2,4,at risk
+C0070,4,2,2,loyal
+C0071,2,3,3,at risk
+C0072,2,2,1,occasional
+C0073,4,3,3,champion
+C0074,4,2,2,loyal
+C0075,2,4,4,at risk
+C0076,1,3,3,at risk
+C0077,1,2,2,occasional
+C0078,3,4,3,loyal
+C0079,3,3,2,loyal
+C0080,3,4,4,loyal
+C0081,4,3,3,champion
+C0082,4,4,4,champion
+C0083,2,4,3,at risk
+C0084,1,1,1,occasional
+C0085,1,1,1,occasional
+C0086,3,3,4,loyal
+C0087,2,3,4,at risk
+C0088,2,2,4,at risk
+C0089,4,3,3,champion
+C0090,2,1,1,occasional
+C0091,4,1,1,new
+C0092,4,3,1,loyal
+C0093,1,4,4,at risk
+C0094,4,2,2,loyal
+C0095,2,1,1,occasional
+C0096,1,3,2,occasional
+C0097,4,3,4,champion
+C0098,2,1,1,occasional
+C0099,1,2,1,occasional
+C0100,2,1,1,occasional
+C0101,1,1,2,occasional
+C0102,4,3,4,champion
+C0103,4,3,3,champion
+C0104,3,2,2,loyal
+C0105,3,1,1,occasional
+C0106,1,1,1,occasional
+C0107,3,3,2,loyal
+C0108,3,2,1,loyal
+C0109,2,3,4,at risk
+C0110,1,1,1,occasional
+C0111,2,2,2,occasional
+C0112,1,3,3,at risk
+C0113,1,1,2,occasional
+C0114,1,4,4,at risk
+C0115,4,2,2,loyal
+C0116,2,1,1,occasional
+C0117,4,2,1,loyal
+C0118,4,3,4,champion
+C0119,3,1,1,occasional
+C0120,1,1,1,occasional
+C0121,2,2,2,occasional
+C0122,1,2,2,occasional
+C0123,3,1,3,occasional
+C0124,3,3,4,loyal
+C0125,2,2,2,occasional
+C0126,4,1,1,new
+C0127,2,1,1,occasional
+C0128,4,3,3,champion
+C0129,4,4,4,champion
+C0130,2,4,4,at risk
+C0131,2,1,1,occasional
+C0132,2,1,2,occasional
+C0133,1,2,2,occasional
+C0134,2,1,2,occasional
+C0135,4,2,3,loyal
+C0136,2,4,4,at risk
+C0137,1,2,4,at risk
+C0138,4,4,3,champion
+C0139,3,4,3,loyal
+C0140,3,4,4,loyal
+C0141,1,1,2,occasional
+C0142,1,2,3,at risk
+C0143,4,4,4,champion
+C0144,4,2,2,loyal
+C0145,4,3,4,champion
+C0146,2,4,4,at risk
+C0147,3,3,2,loyal
+C0148,1,3,2,occasional
+C0149,3,1,1,occasional
+C0150,4,1,2,new
+C0151,3,3,4,loyal
+C0152,1,2,3,at risk
+C0153,2,1,1,occasional
+C0154,2,2,1,occasional
+C0155,2,2,4,at risk
+C0156,1,3,3,at risk
+C0157,1,1,1,occasional
+C0158,4,4,4,champion
+C0159,4,4,4,champion
+C0160,2,3,4,at risk
+C0161,1,3,3,at risk
+C0162,2,1,1,occasional
+C0163,3,1,1,occasional
+C0164,4,2,2,loyal
+C0165,4,1,2,new
+C0166,3,3,3,loyal
+C0167,4,4,3,champion
+C0168,1,4,4,at risk
+C0169,3,2,2,loyal
+C0170,3,2,1,loyal
+C0171,3,2,3,loyal
+C0172,1,1,1,occasional
+C0173,4,3,3,champion
+C0174,3,3,2,loyal
+C0175,1,2,2,occasional
+C0176,2,4,3,at risk
+C0177,3,1,1,occasional
+C0178,2,4,4,at risk
+C0179,3,1,2,occasional
+C0180,1,1,2,occasional
+C0181,1,2,1,occasional
+C0182,4,4,4,champion
+C0183,4,4,3,champion
+C0184,4,3,2,loyal
+C0185,3,1,3,occasional
+C0186,3,3,4,loyal
+C0187,2,1,2,occasional
+C0188,1,1,1,occasional
+C0189,1,1,1,occasional
+C0190,4,3,2,loyal
+C0191,1,1,1,occasional
+C0192,2,1,3,at risk
+C0193,3,2,2,loyal
+C0194,1,3,3,at risk
+C0195,2,1,1,occasional
+C0196,3,3,2,loyal
+C0197,3,1,1,occasional
+C0198,1,1,1,occasional
+C0199,2,4,4,at risk
+C0200,1,3,1,occasional
+C0201,3,1,2,occasional
+C0202,4,1,1,new
+C0203,2,3,3,at risk
+C0204,4,3,3,champion
+C0205,1,2,4,at risk
+C0206,3,3,2,loyal
+C0207,4,4,3,champion
+C0208,2,4,4,at risk
+C0209,1,2,2,occasional
+C0210,4,2,3,loyal
+C0211,2,3,2,occasional
+C0212,1,2,3,at risk
+C0213,4,3,3,champion
+C0214,4,4,3,champion
+C0215,1,2,2,occasional
+C0216,4,1,1,new
+C0217,1,1,1,occasional
+C0218,3,4,4,loyal
+C0219,1,4,3,at risk
+C0220,4,2,2,loyal
+C0221,2,2,1,occasional
+C0222,1,1,1,occasional
+C0223,2,4,3,at risk
+C0224,2,2,2,occasional
+C0225,4,3,3,champion
+C0226,2,4,4,at risk
+C0227,2,4,4,at risk
+C0228,1,1,1,occasional
+C0229,2,1,1,occasional
+C0230,4,3,2,loyal
+C0231,3,3,3,loyal
+C0232,2,3,2,occasional
+C0233,4,3,3,champion
+C0234,4,4,4,champion
+C0235,1,1,1,occasional
+C0236,3,4,4,loyal
+C0237,1,1,1,occasional
+C0238,3,4,3,loyal
+C0239,3,3,3,loyal
+C0240,4,4,4,champion
+C0241,1,4,4,at risk
+C0242,3,3,2,loyal
+C0243,2,4,4,at risk
+C0244,3,3,4,loyal
+C0245,3,3,4,loyal
+C0246,2,4,2,occasional
+C0247,2,1,2,occasional
+C0248,4,4,4,champion
+C0249,3,1,1,occasional
+C0250,2,3,2,occasional
+C0251,2,2,3,at risk
+C0252,1,2,3,at risk
+C0253,1,1,1,occasional
+C0254,1,2,3,at risk
+C0255,1,3,4,at risk
+C0256,2,4,4,at risk
+C0257,2,4,3,at risk
+C0258,2,2,1,occasional
+C0259,3,2,2,loyal
+C0260,2,1,1,occasional
+C0261,1,1,1,occasional
+C0262,3,4,3,loyal
+C0263,3,3,1,loyal
+C0264,1,1,1,occasional
+C0265,4,2,3,loyal
+C0266,3,2,2,loyal
+C0267,2,3,2,occasional
+C0268,3,2,1,loyal
+C0269,4,4,3,champion
+C0270,1,2,1,occasional
+C0271,2,3,3,at risk
+C0272,2,3,1,occasional
+C0273,3,4,4,loyal
+C0274,2,4,4,at risk
+C0275,2,4,4,at risk
+C0276,1,2,2,occasional
+C0277,3,4,4,loyal
+C0278,3,4,3,loyal
+C0279,1,4,3,at risk
+C0280,4,1,1,new
+C0281,2,1,4,at risk
+C0282,3,1,1,occasional
+C0283,2,2,3,at risk
+C0284,3,4,3,loyal
+C0285,2,2,2,occasional
+C0286,1,3,3,at risk
+C0287,3,3,2,loyal
+C0288,2,3,2,occasional
+C0289,1,2,1,occasional
+C0290,1,2,1,occasional
+C0291,4,2,3,loyal
+C0292,4,4,3,champion
+C0293,3,4,4,loyal
+C0294,4,3,4,champion
+C0295,4,3,2,loyal
+C0296,4,2,2,loyal
+C0297,4,1,1,new
+C0298,3,2,3,loyal
+C0299,2,3,1,occasional
+C0300,2,4,4,at risk

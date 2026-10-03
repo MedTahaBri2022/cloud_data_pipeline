@@ -1,0 +1,41 @@
+product_key,product_id,name,category,unit_cost,list_price
+1,P001,Notebook A5,Stationery,8.98,14.00
+2,P002,Gel Pen Set,Stationery,5.45,10.90
+3,P003,Desk Planner,Stationery,6.19,10.41
+4,P004,Sticky Notes,Stationery,2.18,4.19
+5,P005,Highlighter Pack,Stationery,4.77,8.26
+6,P006,Ring Binder,Stationery,6.73,11.41
+7,P007,Sketch Pad,Stationery,6.31,13.36
+8,P008,Fountain Pen,Stationery,6.31,11.91
+9,P009,USB-C Hub,Electronics,51.38,77.81
+10,P010,Wireless Mouse,Electronics,44.31,64.55
+11,P011,Mechanical Keyboard,Electronics,56.56,100.52
+12,P012,Webcam HD,Electronics,41.55,80.53
+13,P013,Laptop Stand,Electronics,47.07,96.86
+14,P014,Noise-Cancelling Headset,Electronics,26.86,51.41
+15,P015,Portable SSD 1TB,Electronics,43.03,85.36
+16,P016,Power Bank,Electronics,36.60,61.81
+17,P017,Desk Lamp,Home,11.91,24.71
+18,P018,Ceramic Mug,Home,12.34,18.44
+19,P019,Storage Box,Home,9.58,15.44
+20,P020,Wall Clock,Home,10.11,21.42
+21,P021,Cushion,Home,20.54,30.16
+22,P022,Scented Candle,Home,13.39,25.68
+23,P023,Plant Pot,Home,16.57,25.54
+24,P024,Coat Hanger Set,Home,17.54,29.46
+25,P025,Yoga Mat,Sports,25.04,43.10
+26,P026,Water Bottle,Sports,16.40,26.57
+27,P027,Resistance Bands,Sports,11.53,19.84
+28,P028,Jump Rope,Sports,26.34,40.09
+29,P029,Running Belt,Sports,13.39,21.23
+30,P030,Foam Roller,Sports,10.80,18.42
+31,P031,Gym Towel,Sports,10.37,22.38
+32,P032,Dumbbell 5kg,Sports,18.84,30.49
+33,P033,Clean Code,Books,27.57,60.79
+34,P034,Designing Data-Intensive Applications,Books,10.80,19.85
+35,P035,The Pragmatic Programmer,Books,49.63,74.29
+36,P036,SQL Performance Explained,Books,31.76,67.47
+37,P037,Kubernetes Up & Running,Books,11.95,26.04
+38,P038,Terraform in Action,Books,26.11,43.44
+39,P039,Data Pipelines Pocket Reference,Books,15.19,28.83
+40,P040,Storytelling with Data,Books,40.44,65.44
